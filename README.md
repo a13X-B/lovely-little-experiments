@@ -2,7 +2,10 @@
  is a collection of small projects you can run with [löve](https://love2d.org/)
 
 ### angular ship
- shows how to use fixed timestep and complex numbers to get rid of trigonometric functions at runtime
+ shows how to use fixed timestep and complex numbers to get rid of trigonometric functions at runtime --currently broken :(
+
+### glowybits
+ blending/postprocessing effect for banded dithered lights
 
 ### pong
  simple pong game that features pretty much everything a pong game needs
