@@ -1,9 +1,9 @@
-#pragma language glsl3
+uniform float scale;
 
 vec4 effect( vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords ){
 	float c = Texel(tex, texture_coords).r;
-	ivec2 sc = ivec2(screen_coords*0.2);
+	vec2 sc = floor(screen_coords*scale);
 
-	c = float( (((sc.x^sc.y) & 1) | int(c > .45)) & int(c > 0.));
-	return vec4(c, 0., 0., 1.) * color;
+	c = (mod(sc.x+sc.y, 2.) + float(c > .45)) * float(c > 0.);
+	return vec4(clamp(c, 0., 1.), 0., 0., 1.) * color;
 }
