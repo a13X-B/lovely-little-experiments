@@ -19,7 +19,7 @@ vec4 position( mat4 transform_projection, vec4 vertex_position ){
   float d = textureLod(dm, uv, 0.).x;
 
   float x = col*2. + float(v_id/2)*2.;
-  float y = (pos.z-d*255.)*400./(1.+row)+300. + float(top)*200.;
+  float y = (pos.z-d*255.)*400./(1.+row)+300. + float(top)*250.;
   float z = -row/1024.;
   
   vertex_position = vec4(x,y,z,1.);

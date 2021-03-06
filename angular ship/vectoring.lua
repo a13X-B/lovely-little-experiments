@@ -1,5 +1,4 @@
 local ffi = require("ffi")
-
 ffi.cdef[[
   typedef struct vec2{double x,y;} vec2;
   typedef struct vec3{double x,y,z;} vec3;
@@ -7,16 +6,15 @@ ffi.cdef[[
 ]]
 
 local v, mt, vec = {}, {}, {}
+
 local swizzler = setmetatable({
-  function(s,k) assert(false, "reading non-existent component") return nil end,
-  function(s,k) return v[2](s[k:sub(1,1)],s[k:sub(2,2)]) end,
-  function(s,k) return v[3](s[k:sub(1,1)],s[k:sub(2,2)],s[k:sub(3,3)]) end,
-  function(s,k) return v[4](s[k:sub(1,1)],s[k:sub(2,2)],s[k:sub(3,3)],s[k:sub(4,4)]) end,
+  [1] = function(s,k) assert(false, "reading non-existent component") return nil end,
+  [2] = function(s,k) return v[2](s[k:sub(1,1)],s[k:sub(2,2)]) end,
+  [3] = function(s,k) return v[3](s[k:sub(1,1)],s[k:sub(2,2)],s[k:sub(3,3)]) end,
+  [4] = function(s,k) return v[4](s[k:sub(1,1)],s[k:sub(2,2)],s[k:sub(3,3)],s[k:sub(4,4)]) end,
   }, {__index = function() error("wrong amount of arguments") end,})
 
-local swizzle_get = function(s, k)
-  return swizzler[#k](s,k)
-end
+local swizzle_get = function(s, k) return swizzler[#k](s,k) end
 
 local swizzle_set = function(s, k, val)
   local id = "xyzw"
@@ -75,7 +73,7 @@ local m = math
 vec.vec2 = v[2]
 vec.vec3 = v[3]
 vec.vec4 = v[4]
-vec.normalize = function(a) return a/(#a) end
+vec.normalize = function(a) return a/(#a) end --what about null vector?
 vec.lerp = function(a, b, t) return a + (b-a)*t end
 vec.abs = function(a)
   return ffi.istype("vec2", a) and v[2](math.abs(a.x), math.abs(a.y))
@@ -87,13 +85,8 @@ vec.dot = function(a, b)
       or ffi.istype("vec3", a) and a.x*b.x + a.y*b.y + a.z*b.z
       or ffi.istype("vec4", a) and a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w
 end
-vec.cross = function(a, b)
-  return v[3](a.y*b.z - b.y*a.z, a.z*b.x - b.z*a.x, a.x*b.y - b.x*a.y)
-end
-vec.conj = function(a)
-  return ffi.istype("vec4", a) and v[4](-a.x, -a.y, -a.z, a.w)
-      or ffi.istype("vec2", a) and v[2](a.x, -a.y) or error"only vec2 and vec4 have conjugates"
-end
+vec.cross = function(a, b) return v[3](a.y*b.z - b.y*a.z, a.z*b.x - b.z*a.x, a.x*b.y - b.x*a.y) end
+vec.conj = function(a) return ffi.istype("vec4", a) and v[4](-a.x, -a.y, -a.z, a.w) or ffi.istype("vec2", a) and v[2](a.x, -a.y) or error"only vec2 and vec4 have conjugates" end
 vec.imul = function(a, b) return v[2](a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x)end
 vec.qmul = function(a, b) return v[4](a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
                                       a.w*b.y + a.y*b.w + a.z*b.x - a.x*b.z,
@@ -101,6 +94,6 @@ vec.qmul = function(a, b) return v[4](a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
                                       a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z)
 end
 
-assert( #(vec.vec2(1,1)) == m.sqrt(2), "can't proceed with vectoring: # operator is not supported")
+assert( #(v[2](1,1)) == m.sqrt(2), "can't proceed with vectoring: # operator is not supported")
 
 return vec
