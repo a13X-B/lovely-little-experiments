@@ -2,7 +2,7 @@ local words = require("words")
 local pics = {}--require("pics")
 
 local g = love.graphics
-local font = g.newFont(64, "normal", 0.75)
+local font = g.newFont(64, "normal", 1.25)
 local text_scale
 
 local w, h = g.getDimensions()

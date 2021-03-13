@@ -1,4 +1,3 @@
---better restart
 --read the rules
 --research possibility of copying a picture
 --pictures
@@ -36,5 +35,5 @@ end
 
 function love.keypressed(k,s,r)
 	if k == "escape" then love.event.quit(0) end
-	if k == "space" then love.event.quit("restart") end
+	if k == "space" then menu.reset() end
 end
