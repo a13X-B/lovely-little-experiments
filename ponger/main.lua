@@ -59,10 +59,13 @@ local score = {0,0}
 local m = {1,-1}
 
 --simulation settings
+local frametime = 0
+local flux = 0
 local tickrate = 24
 local fdt = 1/tickrate
 local time_budget = 0
 local fixed = true
+local paused = false
 
 local function goal(s)
 	score[s] = score[s] + 1
@@ -136,6 +139,8 @@ function love.update(dt)
 		extra_num[i] = new_num[i] + vector      --verlet integraion
 		inter_num[i] = old_num[i] + vector
 	end
+	if frametime/1000 - dt > 0 then love.timer.sleep(frametime/1000 - dt) end
+	if flux > 0 then love.timer.sleep(love.math.random(0, flux)/1000) end
 end
 
 function draw(state)
@@ -145,13 +150,126 @@ function draw(state)
 	g.circle("line", state.ball.x, state.ball.y, 10)
 end
 
+--(arguably) pretty colors
+local colors = {
+	{0,0,0,0},-- 1 invisible
+	{1,0,0,1},-- 2 red
+	{0,1,0,1},-- 3 green
+	{0,0,1,1},-- 4 blue
+	{0,1,1,1},-- 5 cyan
+	{1,0,1,1},-- 6 magenta
+	{1,1,0,1},-- 7 yellow
+	{1,1,1,1},-- 8 white
+}
+local old_color = 4
+local new_color = 2
+local inter_color = 8
+local extra_color = 1
+
+local buttons = {}
+
 function love.draw()
+	g.setColor(colors[old_color])
+	draw(old)
+	g.setColor(colors[new_color])
 	draw(new)
+	g.setColor(colors[inter_color])
 	draw(interpol)
+	g.setColor(colors[extra_color])
 	draw(extrapol)
+	g.setColor(colors[#colors])
 	g.print(score[1]..":"..score[2], 400-13, 20)
+
+	--pause menu incoming, no one said it's gonna be pretty
+	if paused then
+		g.print("colors", 100, 70)
+		g.print("old", 50, 100)
+		g.print("new", 50, 130)
+		g.print("interp", 50, 160)
+		g.print("extrap", 50, 190)
+
+		g.print("sim", 450, 70)
+		g.print("fixed", 350, 100)
+		g.print("tickrate", 350, 130)
+		g.print("frametime", 350, 160)
+		g.print("fluctuation", 350, 190)
+
+		g.print(tostring(fixed), 450, 100)
+		g.print(tickrate, 450, 130)
+		g.print(frametime, 450, 160)
+		g.print(flux, 450, 190)
+		for i = 1, 3 do
+			g.print("-10  -1  +1  +10", 475, 100+i*30)
+		end
+
+		for i, v in ipairs(buttons) do
+			g.rectangle("line", v.x, v.y, v.w, v.h)
+		end
+
+		g.setColor(colors[old_color])
+		g.rectangle("fill", 75+old_color*25 + 3, 103, 14, 14)
+		g.setColor(colors[new_color])
+		g.rectangle("fill", 75+new_color*25 + 3, 133, 14, 14)
+		g.setColor(colors[inter_color])
+		g.rectangle("fill", 75+inter_color*25 + 3, 163, 14, 14)
+		g.setColor(colors[extra_color])
+		g.rectangle("fill", 75+extra_color*25 + 3, 193, 14, 14)
+	end
 end
 
 function love.keypressed(k,s,r)
 	if k == "escape" then love.event.quit(0) end
+	if k == "space" then paused = not paused end
+end
+
+--all the pause menu buttons
+for i = 1, 4 do
+	for j = 1, 8 do
+		buttons[#buttons + 1] = {x = 75+j*25, y = 70+i*30, w = 20, h = 20, f="c"..tostring(i), p = j}
+	end
+end
+buttons[#buttons + 1] = {x = 440, y = 100, w = 50, h = 20, f="fix"}
+for i = 1, 3 do
+	buttons[#buttons + 1] = {x = 475, y = 100 + 30*i, w = 20, h = 20, f="t"..tostring(i), p = -10}
+	buttons[#buttons + 1] = {x = 500, y = 100 + 30*i, w = 20, h = 20, f="t"..tostring(i), p =  -1}
+	buttons[#buttons + 1] = {x = 525, y = 100 + 30*i, w = 20, h = 20, f="t"..tostring(i), p =   1}
+	buttons[#buttons + 1] = {x = 550, y = 100 + 30*i, w = 20, h = 20, f="t"..tostring(i), p =  10}
+end
+
+--and when you thought that menu rendering was ugly
+local fun = {}
+function fun.c1(c)
+	old_color = c
+end
+function fun.c2(c)
+	new_color = c
+end
+function fun.c3(c)
+	inter_color = c
+end
+function fun.c4(c)
+	extra_color = c
+end
+function fun.fix()
+	fixed = not fixed
+	fdt = 1/tickrate
+end
+function fun.t1(n)
+	tickrate = math.min(math.max(10, tickrate+n),200)
+	fdt = 1/tickrate
+end
+function fun.t2(n)
+	frametime = math.min(math.max(0, frametime+n),50)
+end
+function fun.t3(n)
+	flux = math.min(math.max(0, flux+n),50)
+end
+
+function love.mousepressed(x,y,b)
+	if not paused then return end
+	for i, v in ipairs(buttons) do
+		if x >= v.x and x <= v.x+v.w and y >= v.y and y <= v.y+v.h then
+			fun[v.f](v.p)
+		end
+	end
 end
