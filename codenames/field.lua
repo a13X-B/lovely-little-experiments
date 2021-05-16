@@ -62,6 +62,7 @@ local new_field = function(opt)
 
 	text_scale = (cw - 20) / text_scale 
 
+	g.setColor(colors.white)
 	cards = {}
 	for r = 1, row do
 		cards[r] = {}
