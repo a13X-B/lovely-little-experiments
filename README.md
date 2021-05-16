@@ -17,7 +17,7 @@
  simple pong game that features pretty much everything a pong game needs
 
 ### ponger
- same pong with interpolation and extrapolation and a beautiful cinematic 24 ticks physics update
+ same pong with interpolation and extrapolation fixed/relaxed timestep, adjustable tickrate and framerate
 
 ### shady grass
  instanced grass generated and animated in a shader
