@@ -1,4 +1,4 @@
-local name = "p0ng"
+local name = "p0nger"
 
 function love.conf(t)
 	t.identity = name                   -- The name of the save directory (string)
