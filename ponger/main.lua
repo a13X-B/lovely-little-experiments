@@ -1,3 +1,10 @@
+--space to pause the game and bring up settings
+--game has four states that you can color differently
+--use "fixed" to toggle between fixed and relaxed update
+--tickrate sets a tickrate for a fixed timestep
+--frametime sets a minimum frametime in ms to simulate different framerates
+--fluctuation adds a random frametime in ms to simulate unstable framerate
+
 --usual pong stuff that we'll need
 local ffi = require("ffi")
 local g = love.graphics
@@ -179,6 +186,7 @@ function love.draw()
 	draw(extrapol)
 	g.setColor(colors[#colors])
 	g.print(score[1]..":"..score[2], 400-13, 20)
+	g.print(love.timer.getFPS(), 10, 10)
 
 	--pause menu incoming, no one said it's gonna be pretty
 	if paused then
