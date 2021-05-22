@@ -73,6 +73,7 @@ local fdt = 1/tickrate
 local time_budget = 0
 local fixed = true
 local paused = false
+local slow = false
 
 local function goal(s)
 	score[s] = score[s] + 1
@@ -127,6 +128,7 @@ end
 
 function love.update(dt)
 	if paused then return end
+	if slow then dt = dt*0.25 end
 	time_budget = time_budget + dt
 	if not fixed then
 		time_budget = dt*1.5 --
@@ -198,11 +200,13 @@ function love.draw()
 
 		g.print("sim", 450, 70)
 		g.print("fixed", 350, 100)
+		g.print("slow", 550, 100)
 		g.print("tickrate", 350, 130)
 		g.print("frametime", 350, 160)
 		g.print("fluctuation", 350, 190)
 
 		g.print(tostring(fixed), 450, 100)
+		g.print(tostring(slow), 650, 100)
 		g.print(tickrate, 450, 130)
 		g.print(frametime, 450, 160)
 		g.print(flux, 450, 190)
@@ -237,6 +241,7 @@ for i = 1, 4 do
 	end
 end
 buttons[#buttons + 1] = {x = 440, y = 100, w = 50, h = 20, f="fix"}
+buttons[#buttons + 1] = {x = 640, y = 100, w = 50, h = 20, f="slow"}
 for i = 1, 3 do
 	buttons[#buttons + 1] = {x = 475, y = 100 + 30*i, w = 20, h = 20, f="t"..tostring(i), p = -10}
 	buttons[#buttons + 1] = {x = 500, y = 100 + 30*i, w = 20, h = 20, f="t"..tostring(i), p =  -1}
@@ -260,6 +265,10 @@ function fun.c4(c)
 end
 function fun.fix()
 	fixed = not fixed
+	fdt = 1/tickrate
+end
+function fun.slow()
+	slow = not slow
 	fdt = 1/tickrate
 end
 function fun.t1(n)
