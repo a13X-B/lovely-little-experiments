@@ -21,6 +21,7 @@
  - space to pause the game and bring up simulation settings
  - there are four gamestates you can color differently
  - use fixed to toggle beetwen fixed/relaxed timestep
+ - use slow to toggle slow mode to truly appreciat that 10 tickrate interpolation
  - tickrate defines physics updates per second for a fixed timestep
  - frametime sets a minimum time for a frame to update + render in ms to simulate lower framerates, affects relaxed timestep simulation
  - fluctuation adds random time in ms to each frame rendered to simulate unstable framerate
