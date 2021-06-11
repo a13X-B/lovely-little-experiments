@@ -28,7 +28,7 @@
 
 ### ribbon
  randomly generated wavy terrain with evenly distributed UVs, side view
- - more things are coming
+ WIP, more things are coming
 
 ### shady grass
  instanced grass generated and animated in a shader
