@@ -11,16 +11,17 @@ local vertex_format = {
 
 local function make_chunk(s, e)
 	local curve = {}
-	for i = s-1, e+1 do
+	for i = -1, e-s+1 do
+		local x = i+s
 		curve[#curve+1] = i*8
-		curve[#curve+1] = 300+love.math.noise(i/25.1+77)*200-love.math.noise(i/19.4)*150
+		curve[#curve+1] = 300+love.math.noise(x/25.1+77)*200
 	end
 	return curve
 end
 
-local function make_mesh(curve)
+local function make_mesh(curve, l)
 	local verts = {}
-	local l = 0
+	l = l or 0
 	for i=3, #curve-3, 2 do
 		local a = v.vec2(curve[i-2], curve[i-1])
 		local b = v.vec2(curve[i], curve[i+1])
@@ -32,15 +33,17 @@ local function make_mesh(curve)
 		local vert = {b.x, b.y, 0, l,0, n.x,n.y, cur, color()}
 		verts[#verts+1] = vert
 		verts[#verts+1] = vert
-		l = l + #(c-b)*0.01
+		l = l + #(c-b)*0.0024
 	end
-	return g.newMesh(vertex_format, verts,"strip","static")
+	return g.newMesh(vertex_format, verts,"strip","static"), l
 end
 
-local road_s = g.newShader("road.vs","road.ps")
+local road_s = g.newShader("road_vs.glsl","road_ps.glsl")
 
 local noise = make_chunk(0, 100)
-local mesh = make_mesh(noise)
+local mesh, l = make_mesh(noise)
+local noise2 = make_chunk(100, 200)
+local mesh2 = make_mesh(noise2,l)
 
 local t = 0
 function love.update(dt)
@@ -48,10 +51,11 @@ function love.update(dt)
 end
 
 function love.draw()
-	g.line(noise)
-	g.setWireframe(true)
+	--g.line(noise)
+	--g.setWireframe(true)
 	g.setShader(road_s)
-	g.draw(mesh)
+	g.draw(mesh, -400)
+	g.draw(mesh2, 400)
 	g.setWireframe(false)
 	g.setShader()
 end
