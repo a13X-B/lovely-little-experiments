@@ -26,6 +26,10 @@
  - frametime sets a minimum time for a frame to update + render in ms to simulate lower framerates, affects relaxed timestep simulation
  - fluctuation adds random time in ms to each frame rendered to simulate unstable framerate
 
+### ribbon
+ randomly generated wavy terrain with evenly distributed UVs, side view
+ - more things are coming
+
 ### shady grass
  instanced grass generated and animated in a shader
 
