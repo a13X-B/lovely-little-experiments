@@ -30,10 +30,10 @@ local function make_mesh(curve, l)
 		local n = v.normalize(n1+n2)
 		local cur = v.dot(n1, v.normalize(c-b))
 		local color = v.lerp(v.vec4(1,0,1,1), v.vec4(0,1,1,1), 0.5+cur*0.5)
-		local vert = {b.x, b.y, 0, l,0, n.x,n.y, cur, color()}
+		local vert = {b.x, b.y, 0, math.fmod(l, 1.0),0, n.x,n.y, cur, color()}
 		verts[#verts+1] = vert
 		verts[#verts+1] = vert
-		l = l + #(c-b)*0.0024
+		l = l + #(c-b)*0.005
 	end
 	return g.newMesh(vertex_format, verts,"strip","static"), l
 end
@@ -51,11 +51,11 @@ function love.update(dt)
 end
 
 function love.draw()
-	--g.line(noise)
-	--g.setWireframe(true)
+	g.line(noise)
+	g.setWireframe(true)
 	g.setShader(road_s)
-	g.draw(mesh, -400)
-	g.draw(mesh2, 400)
+	g.draw(mesh)
+	--g.draw(mesh2, 400)
 	g.setWireframe(false)
 	g.setShader()
 end
