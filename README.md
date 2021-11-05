@@ -10,6 +10,9 @@
 ### deferred
  deferred lighting example, assets provided by @flamendless
 
+### filmgrain
+ a simplistic decent looking film grain post-processing effect in five lines of shader code
+
 ### glowybits
  blending/postprocessing effect for banded dithered lights
 
