@@ -7,6 +7,9 @@
 ### codenames
  codenames implementation for playing on streams
 
+### deferred
+ deferred lighting example, assets provided by @flamendless
+
 ### glowybits
  blending/postprocessing effect for banded dithered lights
 
