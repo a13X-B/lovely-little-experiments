@@ -1,8 +1,9 @@
 # lovely little experiments
  is a collection of small projects you can run with [löve](https://love2d.org/)
 
-### angular ship
- shows how to use fixed timestep and complex numbers to get rid of trigonometric functions at runtime --currently broken :(
+### ad astra
+ simple starfield rendering exploration
+ WIP - sprites and third dimension
 
 ### codenames
  codenames implementation for playing on streams
