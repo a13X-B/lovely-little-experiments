@@ -3,7 +3,9 @@
 
 ### ad astra
  simple starfield rendering exploration
- WIP - sprites and third dimension
+ - uv scrolling
+ - 2d points mesh scrolling
+ - 3d mesh dome rotation
 
 ### codenames
  codenames implementation for playing on streams
