@@ -57,7 +57,6 @@ for i =1,n*4 do
 end
 
 local orient = love.math.newTransform()
-local scale = love.math.newTransform(0,0,0,100,100)
 
 --takes axis angle representation
 local function set_orientation(x,y,z,a)
