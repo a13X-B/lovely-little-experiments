@@ -1,9 +1,9 @@
 --[[
 TODO:
 - fov
-- figure out z projection
 - textures
 - add camera
+- figure out default primitives
 ]]
 
 local g = love.graphics
@@ -33,7 +33,7 @@ local vm = {
 	1,6,5, 1,2,6,
 	3,5,7, 1,5,3,
 	4,8,6, 2,4,6,
-	}
+}
 
 local cube = g.newMesh(vcf, vc, "triangles", "static")
 local tex = g.newMesh(vtf, vt, "triangles", "static")
@@ -48,25 +48,36 @@ local function set_orientation(x,y,z,a)
 	--let's turn axis angle to a quaternion, would've been great if we had one from the start
 	local l = math.sqrt(x*x+y*y+z*z)
 	x,y,z = x/l, y/l, z/l --normalize imaginary part
-	local w, c = math.sin(a/2), math.cos(a/2) --the real part is a sine of half an angle
+	local w, s = math.cos(a/2), math.sin(a/2) --the real part is a COsine of half an angle
 	--the imaginary part will get multiplied by cosine of half an angle
-	x,y,z = x*c, y*c, z*c -- so x, y, z, w is a quaternion now
+	x,y,z = x*s, y*s, z*s -- so x, y, z, w is a quaternion now
 	R3.rotate(x,y,z,w)
 end
 
 local c = g.newCanvas(g.getDimensions())
 
+--love.mouse.setRelativeMode(true)
+function love.mousemoved(x,y,dx,dy)
+end
+
+local k = love.keyboard
+function love.update(dt)
+end
+
 function love.draw()
 	local t = love.timer.getTime()
-	g.draw(c)
-	--g.setCanvas({c, depth=true})
-	g.clear()
 	R3.origin()
-	R3.scale(.1,.1,.1)
-	--R3.translate(1,math.sin(t),1)
-	set_orientation( 0, 1, 0, t % math.pi*2)--axis angle
-	g.draw(cube)
-	g.setCanvas()
+	--R3.translate(0,0,-10)
+	set_orientation(0,1,0,t%(math.pi*2))
+	--R3.translate(0,0,10)
+	for i = -3,3,3 do
+		for j = -3,3,3 do
+			g.push()
+			R3.translate(i,0,j)
+			g.draw(cube)
+			g.pop()
+		end
+	end
 end
 
 function love.keypressed(k,s,r)
