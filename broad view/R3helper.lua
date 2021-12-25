@@ -13,7 +13,7 @@ function R3.newProjection(perspective, width, height, hfov)
 	projection:setMatrix(
 		1, 0, 0, 0,
 		0, width/height, 0, 0,
-		0, 0, 1, 0,
+		0, 0, 1, -1,
 		0, 0, p, 1
 	)
 	inverse:setMatrix(
