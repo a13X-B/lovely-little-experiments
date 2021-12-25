@@ -56,28 +56,66 @@ end
 
 local c = g.newCanvas(g.getDimensions())
 
+local cam = {
+	hor=0,
+	ver=0,
+}
+
 --love.mouse.setRelativeMode(true)
 function love.mousemoved(x,y,dx,dy)
 end
+
+local pf = {{"pos", "float", 3}}
+local cubes = g.newMesh(pf, 32*32*32, nil, "dynamic")
+
+local spread = 7
+local id = 1
+for i = 1,32 do
+	for j = 1,32 do
+		for k = 1,32 do
+			cubes:setVertex(id, {spread*(i-16), spread*(k-16), spread*(j-16)})
+			id = id+1
+		end
+	end
+end
+
+cube:attachAttribute("pos", cubes, "perinstance")
 
 local k = love.keyboard
 function love.update(dt)
 end
 
+local icube = g.newShader("icube.glsl")
+
 function love.draw()
 	local t = love.timer.getTime()
+	g.setDepthMode("less", true)
 	R3.origin()
-	--R3.translate(0,0,-10)
-	set_orientation(0,1,0,t%(math.pi*2))
-	--R3.translate(0,0,10)
-	for i = -3,3,3 do
-		for j = -3,3,3 do
-			g.push()
-			R3.translate(i,0,j)
-			g.draw(cube)
-			g.pop()
+	--set_orientation(1,0,0,.5) --rotate the scene in the opposite direction
+	R3.translate(0,0,2.5) --move the cam, or rather move everything in the opposite direction
+	set_orientation(0, 1, 0, .1*t%(math.pi*2)) --rotate the scene some more
+	--[[
+	for i = 1,32 do
+		for j = 1,32 do
+			for k = 1,32 do
+				g.push()
+				R3.scale(.01,.01,.01)
+				R3.translate(spread*(i-16), spread*(k-16), spread*(j-16))
+				g.draw(cube)
+				g.pop()
+			end
 		end
 	end
+	--]]
+	g.setShader(icube)
+	R3.scale(.01, .01, .01)
+	g.drawInstanced(cube, 32*32*32)
+	g.setShader()
+	g.origin()
+	g.setDepthMode("always", false)
+	g.print(love.timer.getDelta())
+	g.print(g.getStats().drawcalls, 0, 50)
+	g.print(love.timer.getFPS(), 0, 100)
 end
 
 function love.keypressed(k,s,r)
