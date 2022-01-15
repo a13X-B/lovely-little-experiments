@@ -18,6 +18,9 @@
 
 ### glowybits
  blending/postprocessing effect for banded dithered lights
+ 
+### oit
+ order independent transparency with 16 layers of depth peeling
 
 ### palette
  palette rendering example
