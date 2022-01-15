@@ -19,7 +19,7 @@ function love.conf(t)
 	t.window.fullscreentype = "desktop" -- Choose between "desktop" fullscreen or "exclusive" fullscreen mode (string)
 	t.window.vsync = 0                  -- Vertical sync mode (number)
 	t.window.msaa = 8                   -- The number of samples to use with multi-sampled antialiasing (number)
-	t.window.depth = 24                 -- The number of bits per sample in the depth buffer
+	t.window.depth = nil                 -- The number of bits per sample in the depth buffer
 	t.window.stencil = nil              -- The number of bits per sample in the stencil buffer
 	t.window.display = 1                -- Index of the monitor to show the window in (number)
 	t.window.highdpi = false            -- Enable high-dpi mode for the window on a Retina display (boolean)
