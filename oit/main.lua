@@ -18,9 +18,9 @@ for i=1,n do
 	layers[i] = g.newCanvas(w,h)
 end
 
-local d = g.newCanvas(w,h, {format = "depth32f", readable = true})
-local pd = g.newCanvas(w,h, {format = "depth32f", readable = true})
-local dd = g.newCanvas(1,1, {format = "r32f"}) --dummy depth sampler for the first layer
+local d = g.newCanvas(w,h, {format = "depth24", readable = true})
+local pd = g.newCanvas(w,h, {format = "depth24", readable = true})
+local dd = g.newCanvas(1,1, {format = "r8"}) --dummy depth sampler for the first layer
 
 --instanced ciwbiau
 local pf = {{"pos", "float", 3}}
