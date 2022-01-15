@@ -20,7 +20,7 @@ end
 
 local d = g.newCanvas(w,h, {format = "depth32f", readable = true})
 local pd = g.newCanvas(w,h, {format = "depth32f", readable = true})
-local dd = g.newCanvas(1,1, {format = "r32f"})
+local dd = g.newCanvas(1,1, {format = "r32f"}) --dummy depth sampler for the first layer
 
 --instanced ciwbiau
 local pf = {{"pos", "float", 3}}
@@ -54,19 +54,21 @@ function love.draw()
 	R3.scale(.02, .02, .02)
 	g.setShader(oit_instanced)
 
+	--first layer with dummy depth sampler
+	--pretty much the same as the loop later
 	setup[1] = layers[1]
 	setup.depthstencil = d
 	g.setCanvas(setup)
 	g.clear()
 	oit_instanced:send("d", dd)
 	g.drawInstanced(cube, 32*32*32)
-	for i = 2, n do
-		d,pd = pd,d
-		setup[1] = layers[i]
-		setup.depthstencil = d
-		oit_instanced:send("d", pd)
+	for i = 2, n do --already have the first layer
+		d,pd = pd,d --swap previous and current depthbuffer
+		setup[1] = layers[i] -- render to the next layer
+		setup.depthstencil = d -- with the empty depthbuffer(cleared later)
+		oit_instanced:send("d", pd) --prev depth will be sampled to discard already rendered layers
 		g.setCanvas(setup)
-		g.clear()
+		g.clear() --clear canvas and depth
 		g.drawInstanced(cube, 32*32*32)
 	end
 
@@ -74,10 +76,9 @@ function love.draw()
 	g.setCanvas()
 	g.origin()
 	g.setDepthMode("always", false)
-	g.setColor(1,1,1,.1)
-	for i = n,1,-1 do
+	g.setColor(1,1,1,.1) -- transparent layers
+	for i = n,1,-1 do -- in reverse order
 		g.draw(layers[i],0,0,0,div,div)
-		--g.draw(pd,0,0,0,div,div)
 	end
 	g.setColor(1,1,1,1)
 	g.print(love.timer.getDelta())
