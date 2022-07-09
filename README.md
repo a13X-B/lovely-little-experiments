@@ -6,6 +6,9 @@
  - uv scrolling
  - 2d points mesh scrolling
  - 3d mesh dome rotation
+ 
+### bit umbra
+ an experiment with *sort of* stencil 2d shadows/visibility [WIP]
 
 ### codenames
  codenames implementation for playing on streams
