@@ -10,6 +10,10 @@
 ### bit umbra
  an experiment with *sort of* stencil 2d shadows/visibility that draws 64 shadowcasting lights
 
+### broad view
+ mainly here to demonstrate why having a lot of drawcalls is bad for your frametime
+ also shows how to render a cube without any custom shaders in love 11 if you look close enough
+
 ### codenames
  codenames implementation for playing on streams
 
