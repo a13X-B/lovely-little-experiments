@@ -8,7 +8,7 @@
  - 3d mesh dome rotation
  
 ### bit umbra
- an experiment with *sort of* stencil 2d shadows/visibility [WIP]
+ an experiment with *sort of* stencil 2d shadows/visibility that draws 64 shadowcasting lights
 
 ### codenames
  codenames implementation for playing on streams
