@@ -1,5 +1,5 @@
 local max_lights = 64
-local current_lights = 1
+local current_lights = 64
 
 --math.randomseed()
 local random = math.random
@@ -23,7 +23,7 @@ local w,h = love.graphics.getDimensions()
 pl_position:setVertex(1, {w/2,h/2,0,66.6})
 pl_diffuse:setVertex(1, {.5, .5, .5})
 for i = 2, current_lights do
-	pl_position:setVertex(i, {random(0, w),random(0, h),0,random(50, 250)})
+	pl_position:setVertex(i, {random(0, w),random(0, h),0,random(50, 350)})
 	pl_diffuse:setVertex(i, {random()*.1, random()*.1, random()*.1})
 end
 pointlight:attachAttribute("lpos", pl_position, "perinstance")
