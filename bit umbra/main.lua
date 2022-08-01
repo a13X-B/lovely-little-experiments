@@ -37,7 +37,7 @@ end
 --we want everything that casts shadow to be in a single mesh
 local max_edges = 10000
 local shadow_vf = {{"VertexPosition", "float", 3}}
-local shadow_geometry = g.newMesh(shadow_vf, max_edges*6, "triangles", "stream")
+local shadow_geometry = g.newMesh(shadow_vf, max_edges*6, "triangles", "dynamic")
 shadow_geometry:attachAttribute("lpos", lights.pos, "perinstance")
 
 local transform = love.math.newTransform()
