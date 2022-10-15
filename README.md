@@ -6,9 +6,15 @@
  - uv scrolling
  - 2d points mesh scrolling
  - 3d mesh dome rotation
- 
+
+### big squares
+ proof of concept for "pixelart" upscaling using huge mesh and MSAA
+
 ### bit umbra
  an experiment with *sort of* stencil 2d shadows/visibility that draws 64 shadowcasting lights
+
+### blood sample
+ port of my old SDF raymarching shadertoy demo
 
 ### broad view
  mainly here to demonstrate why having a lot of drawcalls is bad for your frametime
