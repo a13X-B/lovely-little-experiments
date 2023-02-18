@@ -38,17 +38,17 @@ cube:attachAttribute("pos", cubes, "perinstance")
 
 local oit_instanced = g.newShader("icube.glsl")
 
-R3.newProjection(true, w,h)
+local origin = R3.new_origin(true, w,h, math.rad(110))
 
 local setup = {{}}
 
 function love.draw()
 	local t = love.timer.getTime()
 	g.setDepthMode("less", true)
-	R3.origin()
-	R3.translate(0,0,2.5)
-	R3.rotate(R3.aa_to_quat(0, 1, 0, .1*t%(math.pi*2)))
-	R3.scale(.024, .024, .024)
+	R3.set(origin)
+	R3.apply(R3.translate(0,0,3))
+	R3.apply(R3.rotate(R3.aa_to_quat(0, 1, 0, .1*t%(math.pi*2))))
+	R3.apply(R3.scale(.024, .024, .024))
 	g.setShader(oit_instanced)
 
 	--first layer with dummy depth sampler
