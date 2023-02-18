@@ -1,33 +1,41 @@
 local m = love.math
 local g = love.graphics
 
-local projection = m.newTransform()
-local inverse = m.newTransform()
-local last_one = m.newTransform()
 local tmp = m.newTransform()
-
+local bak = m.newTransform()
 local R3 = {}
 
-function R3.newProjection(perspective, width, height, hfov)
-	local p = perspective and 1 or 0
-	projection:setMatrix(
-		1, 0, 0, 0,
-		0, width/height, 0, 0,
-		0, 0, 1, -1,
-		0, 0, p, 1
-	)
-	inverse:setMatrix(
+function R3.new_inverse(width, height)
+	return m.newTransform():setMatrix(
 		2/width,0,0,-1,
 		0,-2/height,0,1,
 		0,0,-1/10,0,
 		0,0,0,1
-	)
-	last_one = inverse:inverse():apply(projection)
-	return last_one
+	):inverse()
 end
 
-function R3.origin(projection)
-	g.replaceTransform(projection or last_one)
+function R3.new_projection(perspective, width, height, hfov)
+	local p = perspective and 1 or 0
+	hfov = hfov or math.pi*.5
+	local f = 1/math.tan(hfov*.5)
+	return m.newTransform():setMatrix(
+		1*f, 0, 0, 0,
+		0, f*width/height, 0, 0,
+		0, 0, 1, -1,
+		0, 0, p, 0
+	)
+end
+
+function R3.new_origin(perspective, width, height, hfov)
+	return R3.new_inverse(width, height):apply(R3.new_projection(perspective, width, height, hfov))
+end
+
+function R3.set(transform)
+	g.replaceTransform(transform)
+end
+
+function R3.apply(transform)
+	g.applyTransform(transform)
 end
 
 function R3.translate(x,y,z)
@@ -37,19 +45,8 @@ function R3.translate(x,y,z)
 		0,0,1,z,
 		0,0,0,1
 	)
-	g.applyTransform(tmp)
-	tmp:reset()
-end
-
-function R3.rotate(i,j,k,w)
-	tmp:setMatrix(
-		1-2*j*j-2*k*k, 2*i*j+2*w*k, 2*i*k-2*w*j, 0,
-		2*i*j-2*w*k, 1-2*i*i-2*k*k, 2*j*k+2*w*i, 0,
-		2*i*k+2*w*j, 2*j*k-2*w*i, 1-2*i*i-2*j*j, 0,
-		0, 0, 0, 1
-	)
-	g.applyTransform(tmp)
-	tmp:reset()
+	tmp, bak = bak, tmp
+	return bak
 end
 
 function R3.scale(x,y,z)
@@ -59,10 +56,20 @@ function R3.scale(x,y,z)
 		0,0,z,0,
 		0,0,0,1
 	)
-	g.applyTransform(tmp)
-	tmp:reset()
+	tmp, bak = bak, tmp
+	return bak
 end
 
+function R3.rotate(i,j,k,w)
+	tmp:setMatrix(
+		1-2*j*j-2*k*k, 2*i*j+2*w*k, 2*i*k-2*w*j, 0,
+		2*i*j-2*w*k, 1-2*i*i-2*k*k, 2*j*k+2*w*i, 0,
+		2*i*k+2*w*j, 2*j*k-2*w*i, 1-2*i*i-2*j*j, 0,
+		0, 0, 0, 1
+	)
+	tmp, bak = bak, tmp
+	return bak
+end
 
 function R3.aa_to_quat(x,y,z,a)
 	--let's turn axis angle into a quaternion
