@@ -9,14 +9,14 @@ local texture = g.newImage("brick.png", {mipmaps=true})
 local cube = require("ciwb")
 cube:setTexture(texture)
 
-R3.newProjection(true, g.getDimensions())
+local origin = R3.new_origin(true, g.getDimensions())
 
 function love.draw()
 	local t = love.timer.getTime()
 	g.setDepthMode("less", true)
-	R3.origin()
-	R3.translate(0,0,3) --step away a little bit
-	R3.rotate(R3.aa_to_quat(math.cos(t), math.sin(t), 0, t%(math.pi*2))) --rotate the cube
+	R3.set(origin)
+	R3.apply(R3.translate(0,0,3)) --step away a little bit
+	R3.apply(R3.rotate(R3.aa_to_quat(math.cos(t), math.sin(t), 0, t%(math.pi*2)))) --rotate the cube
 
 	g.draw(cube)
 	g.origin()
