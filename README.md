@@ -57,6 +57,8 @@
    order independent transparency with 16 layers
  - ### camera
    it's almost like you're there!
+ - ### shadows
+   renders shadowmap with HW PCF
 
 ## shady grass
  instanced grass generated and animated in a shader
