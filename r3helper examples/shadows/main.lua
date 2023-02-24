@@ -5,14 +5,15 @@ local scene = require("scene")
 local res = 1024
 local shadow_inv = R3.new_inverse(res,res)
 
+--shadow ortho projection
 --this preferably should be computed to cover as much frustum as possible
 local shadow_proj = R3.new_ortho(26,26, -11.7, 11.7)
 shadow_proj:apply(
 	R3.rotate(R3.aa_to_quat(1,0,0,.3)) *
 	R3.rotate(R3.aa_to_quat(0,1,0,.3))
 )
-local shadow_view = shadow_proj
 
+--shadow map settings
 local shadow_map = {}
 do
 	shadow_map.depthstencil = g.newCanvas(res, res, {type="2d", format="depth32f", readable=true})
@@ -20,6 +21,7 @@ do
 end
 local shadow_shader = g.newShader("sm.glsl")
 
+--perspective projection
 local w,h = g.getDimensions()
 local proj = R3.new_perspective(w,h, .1, math.pi/3)
 
@@ -28,18 +30,18 @@ function love.draw()
 	g.setDepthMode("less", true)
 	g.setMeshCullMode("front")
 
---set depth
+	--draw depth buffer for shadowmap
 	g.setCanvas(shadow_map)
 	g.clear(0,0,0,0,false,true)
 	g.replaceTransform(shadow_inv*shadow_proj)
 	scene.draw()
 
+	--draw scene with shadows
 	g.setCanvas()
 	g.setMeshCullMode("back")
-	--set shader
 	g.setShader(shadow_shader)
 	shadow_shader:send("sm", shadow_map.depthstencil)
-	shadow_shader:send("shadow_view", shadow_view)
+	shadow_shader:send("shadow_view", shadow_proj)
 	shadow_shader:send("proj", proj *
 		R3.rotate(R3.aa_to_quat(1,0,0,.3)) * --rotate the camera
 		R3.translate(0,-4,14) * --move the camera
