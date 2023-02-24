@@ -31,16 +31,20 @@ local icube = g.newShader("icube.glsl")
 function love.draw()
 	local t = love.timer.getTime()
 	g.setDepthMode("less", true)
-	R3.set(origin)
-	R3.apply(R3.translate(0,0,2.5))
-	R3.apply(R3.rotate(R3.aa_to_quat(0, 1, 0, .1*t%(math.pi*2))))
+	g.replaceTransform(
+		origin *
+		R3.translate(0,0,2.5) *
+		R3.rotate(R3.aa_to_quat(0, 1, 0, .1*t%(math.pi*2)))
+	)
 	--[[ run this code if you want to compare the speed with rendering one by one
 	for i = 1,32 do
 		for j = 1,32 do
 			for k = 1,32 do
 				g.push()
-				R3.scale(.01,.01,.01)
-				R3.translate(spread*(i-16), spread*(k-16), spread*(j-16))
+				g.applyTransform(
+					R3.scale(.01,.01,.01) *
+					R3.translate(spread*(i-16), spread*(k-16), spread*(j-16))
+				)
 				g.draw(cube)
 				g.pop()
 			end
@@ -49,7 +53,7 @@ function love.draw()
 	--]]
 	g.setShader(icube)
 	local s = .011 - .001*math.cos(t*.0001)
-	R3.apply(R3.scale(s, s, s))
+	g.applyTransform(R3.scale(s, s, s))
 	g.drawInstanced(cube, 32*32*32)
 	g.setShader()
 	g.origin()

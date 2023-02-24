@@ -3,7 +3,6 @@ local R3 = require("R3helper")
 
 g.setMeshCullMode("back")
 g.setFrontFaceWinding("ccw")
-g.setDepthMode("less", true)
 
 local texture = g.newImage("brick.png", {mipmaps=true})
 local cube = require("ciwb")
@@ -14,9 +13,11 @@ local origin = R3.new_origin(true, g.getDimensions())
 function love.draw()
 	local t = love.timer.getTime()
 	g.setDepthMode("less", true)
-	R3.set(origin)
-	R3.apply(R3.translate(0,0,3)) --step away a little bit
-	R3.apply(R3.rotate(R3.aa_to_quat(math.cos(t), math.sin(t), 0, t%(math.pi*2)))) --rotate the cube
+	g.replaceTransform(
+		origin *
+		R3.translate(0,0,2.5) * --step away a little bit
+		R3.rotate(R3.aa_to_quat(math.cos(t), math.sin(t), 0, t%(math.pi*2))) --rotate the cube
+	)
 
 	g.draw(cube)
 	g.origin()

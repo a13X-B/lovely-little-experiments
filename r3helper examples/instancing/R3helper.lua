@@ -14,28 +14,34 @@ function R3.new_inverse(width, height)
 	):inverse()
 end
 
-function R3.new_projection(perspective, width, height, hfov)
-	local p = perspective and 1 or 0
+function R3.new_perspective(width, height, near, hfov)
+	local n = near or .1
 	hfov = hfov or math.pi*.5
 	local f = 1/math.tan(hfov*.5)
+	local ar = width/height
 	return m.newTransform():setMatrix(
-		1*f, 0, 0, 0,
-		0, f*width/height, 0, 0,
-		0, 0, 1, -1,
-		0, 0, p, 0
+		f/ar, 0, 0, 0,
+		0, f, 0, 0,
+		0, 0, 1, -2*n,
+		0, 0, 1, 0
 	)
 end
 
-function R3.new_origin(perspective, width, height, hfov)
-	return R3.new_inverse(width, height):apply(R3.new_projection(perspective, width, height, hfov))
+function R3.new_ortho(width, height, near, far)
+	return m.newTransform():setMatrix(
+		2/width, 0, 0, 0,
+		0, 2/height, 0, 0,
+		0, 0, 2/(far-near), -(far+near)/(far-near),
+		0, 0, 0, 1
+	)
 end
 
-function R3.set(transform)
-	g.replaceTransform(transform)
-end
-
-function R3.apply(transform)
-	g.applyTransform(transform)
+function R3.new_origin(perspective, width, height, near, hfov)
+	if perspective then
+		return R3.new_inverse(width, height):apply(R3.new_perspective(width, height, near, hfov))
+	else
+		return R3.new_inverse(width, height):apply(R3.new_ortho(2, 2, near, hfov))
+	end
 end
 
 function R3.translate(x,y,z)

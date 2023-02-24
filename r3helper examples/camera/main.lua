@@ -60,15 +60,15 @@ local rng = love.math.newRandomGenerator()
 function love.draw()
 	local t = love.timer.getTime()
 	g.setDepthMode("less", true)
-	R3.set(origin)
-	R3.apply(
+	g.replaceTransform(origin)
+	g.applyTransform(
 		R3.rotate(R3.aa_to_quat(1,0,0,player.ver)) * --rotate the camera
 		R3.rotate(R3.aa_to_quat(0,1,0,player.hor)) * --rotate the camera
 		R3.translate(player.x, player.y, player.z) --move the camera
 	)
 
 	g.push()
-	R3.apply(
+	g.applyTransform(
 		R3.translate(0,-2,0) * --move the ground
 		R3.scale(10,1,10) --scale the ground
 	)
@@ -78,7 +78,7 @@ function love.draw()
 	rng:setSeed(31337)
 	for i=1,33 do
 		g.push()
-		R3.apply(
+		g.applyTransform(
 			R3.translate(-8+16*rng:random(),-rng:random(),-8+16*rng:random()) * --move a cube
 			R3.rotate(R3.aa_to_quat(0,1,0,rng:random()*math.pi*2)) * --rotate the cube
 			R3.scale(.3+rng:random()*.3,1,.3+rng:random()*.5) --scale the cube
