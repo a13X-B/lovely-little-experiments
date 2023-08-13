@@ -52,8 +52,8 @@ function love.update(dt)
 			forward, sideways = forward/l, sideways/l
 		end
 	end
-	player.z = player.z + ( sideways*math.sin(player.hor) - forward*math.cos(player.hor) )*dt*velocity
-	player.x = player.x - ( sideways*math.cos(player.hor) + forward*math.sin(player.hor) )*dt*velocity
+	player.z = player.z + ( forward*math.cos(player.hor) - sideways*math.sin(player.hor) )*dt*velocity
+	player.x = player.x + ( sideways*math.cos(player.hor) + forward*math.sin(player.hor) )*dt*velocity
 end
 
 local rng = love.math.newRandomGenerator()
@@ -64,7 +64,7 @@ function love.draw()
 	g.applyTransform(
 		R3.rotate(R3.aa_to_quat(1,0,0,player.ver)) * --rotate the camera
 		R3.rotate(R3.aa_to_quat(0,1,0,player.hor)) * --rotate the camera
-		R3.translate(player.x, player.y, player.z) --move the camera
+		R3.translate(-player.x, -player.y, -player.z) --move the camera
 	)
 
 	g.push()
