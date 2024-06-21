@@ -15,6 +15,10 @@ local crcp = {
 	w*.2, h*.6,
 }
 
+local function lerp(a,b,t)
+	return a*(1-t)+b*t
+end
+
 local b2 = love.math.newBezierCurve(b2cp)
 local b3 = love.math.newBezierCurve(b3cp)
 local cat = cr.newSpline(crcp)
@@ -50,10 +54,11 @@ function love.draw()
 		g.line(lines[i])
 	end
 	for i,v in ipairs(p) do
-		local x,y = lines[i][v.s*2-1],lines[i][v.s*2]
-		local dx, dy = lines[i][v.s*2+1]-x, lines[i][v.s*2+2]-y
-		dx, dy = dx/len[i][v.s], dy/len[i][v.s]
-		x,y = x+dx*v.dr,y+dy*v.dr
+		local sx, sy = lines[i][v.s*2-1], lines[i][v.s*2]
+		local ex, ey = lines[i][v.s*2+1], lines[i][v.s*2+2]
+		local t = v.dr/len[i][v.s]
+		x = lerp(sx, ex, t)
+		y = lerp(sy, ey, t)
 		g.circle("line",x,y, 10)
 	end
 end
