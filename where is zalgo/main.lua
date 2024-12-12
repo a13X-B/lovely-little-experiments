@@ -71,6 +71,7 @@ end
 function love.draw()
 	if not sort_en then
 		g.setShader(depth_shader)
+		depth_shader:send("depth_scale", h*2)
 		g.setDepthMode("less", true)
 	end
 	g.draw(batch_of_dudes)

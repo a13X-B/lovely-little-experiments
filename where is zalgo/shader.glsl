@@ -1,8 +1,9 @@
 #pragma language glsl3
 #ifdef VERTEX
+uniform float depth_scale;
 vec4 position( mat4 transform_projection, vec4 vertex_position ){
 	int v_id = gl_VertexID%2;
-	vertex_position.z = (vertex_position.y-32.*float(v_id))/4320.;
+	vertex_position.z = (vertex_position.y-32.*float(v_id))/depth_scale;
 	return transform_projection * vertex_position;
 }
 #endif
