@@ -81,7 +81,7 @@ for i = 1, number_of_bubbles do
 	local bubble = {
 		x = rnd:random(-200, w+100),
 		y = rnd:random(100, h+100),
-		t = math.max(rnd:random()*17),
+		f = rnd:random(1,2),
 		vel = rnd:random(33,77)
 	}
 	bubbles[i] = bubble
@@ -94,13 +94,13 @@ local function update_bubbles(dt)
 		if bubble.x > w+32 then
 			bubble.x = rnd:random(-w-100, -100)
 			bubble.y = rnd:random(100, h+100)
+			bubble.f = rnd:random(1,2)
 		end
-		bubble.t = (bubble.t + dt)%.444
 	end
 	bubbles[1].x = w/2
 	bubbles[1].y = h/2
 	for i, bubble in ipairs(bubbles) do
-		local quad = bubble_frames[1]
+		local quad = bubble_frames[bubble.f]
 		batch_of_bubbles:set(i,quad,math.floor(bubble.x),math.floor(bubble.y),0,1,1,32,84,0,0)
 	end
 end
