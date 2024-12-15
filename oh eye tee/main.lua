@@ -110,33 +110,36 @@ function love.update(dt)
 	update_bubbles(dt)
 end
 
-local screen = g.newCanvas(w,h,{msaa=8})
+local superscale = 2 -- more than two requires a different downsampling method
+local iter = 4 -- number of iterations, 
+-- final calculation is average of superscale squared by iter of msaa graded alpha
+
+local screen = g.newCanvas(w*superscale,h*superscale,{msaa=8})
 local screen_set = {screen, depth=true}
 local function draw_scene()
 	g.setCanvas(screen_set)
 	g.clear()
 	depth_shader:send("lut", coverage_lut)
-	depth_shader:send("depth_scale", h*2)
+	depth_shader:send("depth_scale", h*(superscale+1))
 	depth_shader:send("mask_offset", rnd:random())
-	depth_shader:send("depth_offset", 64)
+	depth_shader:send("depth_offset", 64*superscale)
 	g.setShader(depth_shader)
 	g.setDepthMode("less", true)
-	g.draw(batch_of_dudes)
-	depth_shader:send("depth_offset", 96)
-	g.draw(batch_of_bubbles)
+	g.draw(batch_of_dudes,0,0,0,superscale,superscale)
+	depth_shader:send("depth_offset", 96*superscale)
+	g.draw(batch_of_bubbles,0,0,0,superscale,superscale)
 	g.setDepthMode()
 	g.setShader()
 	g.setCanvas()
 end
 
 function love.draw()
-	local iter = 8
 	local avg = 1/iter
 	for i = 1, iter do
 		draw_scene()
 		g.setColor(love.math.linearToGamma(avg,avg,avg,1))
 		g.setBlendMode("add", "premultiplied")
-		g.draw(screen)
+		g.draw(screen,0,0,0, 1/superscale, 1/superscale)
 		g.setColor(1,1,1,1)
 		g.setBlendMode("alpha")
 	end
